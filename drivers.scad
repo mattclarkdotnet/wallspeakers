@@ -14,6 +14,7 @@ bass_driver_rebate_diameter=152.5;
 bass_driver_screw_placement_diameter=140.1;
 bass_driver_screwhole_diameter=4;
 bass_driver_screw_offset=cos(45)*bass_driver_screw_placement_diameter/2;
+bass_driver_chamfer=4;
 
 include <BOSL2/std.scad>
 
@@ -57,10 +58,11 @@ module bmr_driver_rebate(t) {
 }
 
 module LW150(t) {
-    // bass driver hole
+    // bass driver rebate
     translate([0, 0, (t-bass_driver_rebate_depth)/2])
         cyl(d=bass_driver_rebate_diameter,l=bass_driver_rebate_depth+$fs);
-    cyl(d=bass_driver_hole_diameter,l=t+$fs);
+    // bass_driver_hole
+    cyl(d=bass_driver_hole_diameter,l=t+$fs, chamfer1=-bass_driver_chamfer);
     // bass driver screw holes
     screwhole(bass_driver_screw_offset, bass_driver_screw_offset, bass_driver_screwhole_diameter, t);
     screwhole(bass_driver_screw_offset, -bass_driver_screw_offset, bass_driver_screwhole_diameter, t);

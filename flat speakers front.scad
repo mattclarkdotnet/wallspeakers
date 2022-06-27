@@ -2,18 +2,21 @@ $fa = 1;
 $fs = 0.01;
 
 include <drivers.scad>
-bmr_driver_x_offset = -40;
-bmr_driver_y_offset = -180;
-bass_driver_x_offset=0;
-bass_driver_y_offset=-60;
-
 fp_thickness=9;
-fp_width=170;
+fp_width=180;
 fp_height=500;
 fp_roundover=4;
 
+bmr_driver_x_offset = -fp_width/2+50;
+bmr_driver_y_offset = -fp_height/2+70;
+bass_driver_x_offset=0;
+bass_driver_y_offset=-fp_height/2+190;
+
 rebate=fp_thickness/2;
 interior_depth=(bass_driver_total_depth-bass_driver_rebate_depth)-(fp_thickness-bass_driver_rebate_depth);
+//interior_depth=32; // the driver only needs 28mm, but then the box volume is a bit smaller
+echo(str("interior_depth(mm) = ", interior_depth));
+echo(str("volume(l) = ", interior_depth*(fp_height-bp_thickness*2)*(fp_width-sp_thickness*2)/1000000));
 
 bp_thickness = 9;
 bp_width = fp_width;
@@ -91,20 +94,14 @@ color("Grey")
         rotate([90,0,90])
             cuboid([ipw2, interior_depth, fp_thickness]);
 
-// Interior braces (order a dozen)
+// Interior brace
 color("Grey")
     translate([0, fp_height/2-140, -sp_height/2])
         rotate([90,0,90])
             difference() {
-                d = interior_depth-5;
-                i = interior_depth+5;
-                cuboid([i*3, interior_depth, fp_thickness]);
-                translate([0,0,0])
-                    cyl(d=d,l=fp_thickness+$fs);
-                translate([-i,0,0])
-                    cyl(d=d,l=fp_thickness+$fs);
-                translate([i,0,0])
-                    cyl(d=d,l=fp_thickness+$fs);
+                cuboid([interior_depth*3+5, interior_depth, fp_thickness]);
+                xcopies(interior_depth, n=3)
+                    cyl(d=interior_depth-5,l=fp_thickness+$fs);
             }
 
 
