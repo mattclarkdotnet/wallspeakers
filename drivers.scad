@@ -3,7 +3,7 @@ bmr_driver_rebate_depth=2;
 bmr_driver_screw_placement_diameter=48;
 bmr_driver_hole_diameter=46;
 bmr_driver_screw_offset=cos(45)*bmr_driver_screw_placement_diameter/2;
-bmr_driver_screwhole_diameter=2;
+bmr_driver_screwhole_diameter=2.5; // actual size of hole in driver
 bmr_driver_screwpost_diameter=6;
 bmr_driver_chamfer=4;
 
@@ -12,7 +12,7 @@ bass_driver_rebate_depth=5.3;
 bass_driver_hole_diameter=128;
 bass_driver_rebate_diameter=152.5;
 bass_driver_screw_placement_diameter=140.1;
-bass_driver_screwhole_diameter=4;
+bass_driver_screwhole_diameter=4.5; // actual size of hole in driver
 bass_driver_screw_offset=cos(45)*bass_driver_screw_placement_diameter/2;
 
 include <BOSL2/std.scad>
@@ -40,10 +40,10 @@ module bmr_driver_hole(t) {
         screwpost(-bmr_driver_screw_offset, bmr_driver_screw_offset, t);
         screwpost(-bmr_driver_screw_offset, -bmr_driver_screw_offset, t);
     }
-    screwhole(bmr_driver_screw_offset, bmr_driver_screw_offset, bmr_driver_screwhole_diameter, t);
-    screwhole(bmr_driver_screw_offset, -bmr_driver_screw_offset, bmr_driver_screwhole_diameter, t);
-    screwhole(-bmr_driver_screw_offset, bmr_driver_screw_offset, bmr_driver_screwhole_diameter, t);
-    screwhole(-bmr_driver_screw_offset, -bmr_driver_screw_offset, bmr_driver_screwhole_diameter, t);
+    screwhole(bmr_driver_screw_offset, bmr_driver_screw_offset, bmr_driver_screwhole_diameter - 0.5, t);
+    screwhole(bmr_driver_screw_offset, -bmr_driver_screw_offset, bmr_driver_screwhole_diameter - 0.5, t);
+    screwhole(-bmr_driver_screw_offset, bmr_driver_screw_offset, bmr_driver_screwhole_diameter - 0.5, t);
+    screwhole(-bmr_driver_screw_offset, -bmr_driver_screw_offset, bmr_driver_screwhole_diameter - 0.5, t);
 }
 
 module bmr_driver_rebate(t) {
@@ -63,10 +63,10 @@ module LW150(t) {
     // bass_driver_hole
     cyl(d=bass_driver_hole_diameter,l=t+$fs);
     // bass driver screw holes
-    screwhole(bass_driver_screw_offset, bass_driver_screw_offset, bass_driver_screwhole_diameter, t);
-    screwhole(bass_driver_screw_offset, -bass_driver_screw_offset, bass_driver_screwhole_diameter, t);
-    screwhole(-bass_driver_screw_offset, bass_driver_screw_offset, bass_driver_screwhole_diameter, t);
-    screwhole(-bass_driver_screw_offset, -bass_driver_screw_offset, bass_driver_screwhole_diameter, t);
+    screwhole(bass_driver_screw_offset, bass_driver_screw_offset, bass_driver_screwhole_diameter - 0.5, t);
+    screwhole(bass_driver_screw_offset, -bass_driver_screw_offset, bass_driver_screwhole_diameter - 0.5, t);
+    screwhole(-bass_driver_screw_offset, bass_driver_screw_offset, bass_driver_screwhole_diameter - 0.5, t);
+    screwhole(-bass_driver_screw_offset, -bass_driver_screw_offset, bass_driver_screwhole_diameter - 0.5, t);
     
 }
 
