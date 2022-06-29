@@ -13,7 +13,7 @@ bass_driver_x_offset = 0;
 bass_driver_y_offset = -fp_height/2+190;
 
 rebate = fp_thickness/2;
-interior_depth = bass_driver_mounting_depth-(fp_thickness-bass_driver_rebate_depth);
+interior_depth = bass_driver_mounting_depth-(fp_thickness-bass_driver_rebate_depth); // this comes out at 29mm 
 
 bp_thickness = 9;
 bp_width = fp_width;
