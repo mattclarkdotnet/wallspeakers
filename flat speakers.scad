@@ -13,10 +13,8 @@ bass_driver_x_offset=0;
 bass_driver_y_offset=-fp_height/2+190;
 
 rebate=fp_thickness/2;
-interior_depth=(bass_driver_total_depth-bass_driver_rebate_depth)-(fp_thickness-bass_driver_rebate_depth);
+interior_depth=bass_driver_mounting_depth-(fp_thickness-bass_driver_rebate_depth);
 //interior_depth=32; // the driver only needs 28mm, but then the box volume is a bit smaller
-echo(str("interior_depth(mm) = ", interior_depth));
-echo(str("volume(l) = ", interior_depth*(fp_height-bp_thickness*2)*(fp_width-sp_thickness*2)/1000000));
 
 bp_thickness = 9;
 bp_width = fp_width;
@@ -25,7 +23,6 @@ bp_height = interior_depth + rebate*2;
 sp_thickness = 9;
 sp_width = fp_height - rebate*2;
 sp_height = interior_depth + rebate*2;
-
 
 module faceplate_body() {
     difference() {
@@ -103,6 +100,14 @@ color("Grey")
                 xcopies(interior_depth, n=3)
                     cyl(d=interior_depth-5,l=fp_thickness+$fs);
             }
+
+echo(str("top/bottom panels = w", bp_width, " h", bp_height, " d", bp_thickness));
+echo(str("interior panel 1 = w", ipw1, " h", interior_depth, " d", bp_thickness));
+echo(str("interior panel 2 = w", ipw2, " h", interior_depth, " d", bp_thickness));
+echo(str("top/bottom panels = w", bp_width, " h", bp_height, " d", bp_thickness));
+echo(str("interior_depth = ", interior_depth));
+echo(str("volume(l) = ", interior_depth*(fp_height-bp_thickness*2)*(fp_width-sp_thickness*2)/1000000));
+echo(str("subenclosure volume(l) = ", interior_depth*(ipw1-5)*(ipw2-5)/1000000));
 
 
 
