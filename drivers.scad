@@ -1,80 +1,65 @@
 bmr_driver_rebate_diameter=52;
-bmr_driver_rebate_depth=2;
+bmr_driver_rebate_depth=2.5; // flange depth is 2, add a bit to allow for gasket
 bmr_driver_screw_placement_diameter=48;
 bmr_driver_hole_diameter=46;
-bmr_driver_screw_offset=cos(45)*bmr_driver_screw_placement_diameter/2;
-bmr_driver_screwhole_diameter=2; // size of screwhole in cabinet, not driver
+bmr_driver_screwhole_diameter=1.5; // for M2.5 screw (not bolt)
 bmr_driver_screwpost_diameter=6;
 bmr_driver_chamfer=4;
 
-bass_driver_mounting_depth=31.8;
-bass_driver_rebate_depth=5.3;
+bass_driver_mounting_depth=32;
+bass_driver_rebate_depth=6; // flange depth is 5.3, add a bit to allow for gasket
 bass_driver_hole_diameter=128;
 bass_driver_rebate_diameter=152.5;
 bass_driver_screw_placement_diameter=140.1;
-bass_driver_screwhole_diameter=4; // size of screwhole in cabinet, not driver
-bass_driver_screw_offset=cos(45)*bass_driver_screw_placement_diameter/2;
+bass_driver_screwhole_diameter=4; // M4 bolt through 4.5mm hole in driver to allow for fitting slop
 
 include <BOSL2/std.scad>
 
-module screwpost(x,y,t) {
-    translate([x,y,0])
-        cyl(d=bmr_driver_screwpost_diameter,l=t+$fs);
-}
-
-module screwhole(x,y,r,t) {
-    translate([x,y,0])
-        cyl(d=r,l=t+$fs);
-}
-
-module indent(x,y) {
-    translate([x,y,0])
-        cyl(d=bmr_driver_screwpost_diameter+$fs,l=bmr_driver_rebate_depth+$fs);
-}
-
+// a circular hole with scallops for the screwposts
 module bmr_driver_hole(t) {
     difference() {
         cyl(d=bmr_driver_hole_diameter,l=t+$fs);
-        screwpost(bmr_driver_screw_offset, bmr_driver_screw_offset, t);
-        screwpost(bmr_driver_screw_offset, -bmr_driver_screw_offset, t);
-        screwpost(-bmr_driver_screw_offset, bmr_driver_screw_offset, t);
-        screwpost(-bmr_driver_screw_offset, -bmr_driver_screw_offset, t);
+        arc_of(4, d=bmr_driver_screw_placement_diameter, sa=45, ea=315) {
+            cyl(d=bmr_driver_screwpost_diameter,l=t+$fs);
+        }   
     }
-    screwhole(bmr_driver_screw_offset, bmr_driver_screw_offset, bmr_driver_screwhole_diameter, t);
-    screwhole(bmr_driver_screw_offset, -bmr_driver_screw_offset, bmr_driver_screwhole_diameter, t);
-    screwhole(-bmr_driver_screw_offset, bmr_driver_screw_offset, bmr_driver_screwhole_diameter, t);
-    screwhole(-bmr_driver_screw_offset, -bmr_driver_screw_offset, bmr_driver_screwhole_diameter, t);
+    arc_of(4, d=bmr_driver_screw_placement_diameter, sa=45, ea=315) {
+        cyl(d=bmr_driver_screwhole_diameter,l=t+$fs);
+    }
 }
 
+// A circular rebate with additional indents
 module bmr_driver_rebate(t) {
-    translate([0, 0, (t-bmr_driver_rebate_depth)    /2]) {
+    translate([0, 0, (t-bmr_driver_rebate_depth)/2]) {
         cyl(d=bmr_driver_rebate_diameter,l=bmr_driver_rebate_depth+$fs);
-        indent(bmr_driver_screw_offset,bmr_driver_screw_offset);
-        indent(bmr_driver_screw_offset,-bmr_driver_screw_offset);
-        indent(-bmr_driver_screw_offset,bmr_driver_screw_offset);
-        indent(-bmr_driver_screw_offset,-bmr_driver_screw_offset);
+        arc_of(4, d=bmr_driver_screw_placement_diameter, sa=45, ea=315) {
+            cyl(d=bmr_driver_screwpost_diameter+$fs,l=bmr_driver_rebate_depth+$fs);
+        }
     }
 }
 
 module LW150(t) {
-    // bass driver rebate
+    // rebate
     translate([0, 0, (t-bass_driver_rebate_depth)/2])
         cyl(d=bass_driver_rebate_diameter,l=bass_driver_rebate_depth+$fs);
-    // bass_driver_hole
+    // hole
     cyl(d=bass_driver_hole_diameter,l=t+$fs);
     // bass driver screw holes
-    screwhole(bass_driver_screw_offset, bass_driver_screw_offset, bass_driver_screwhole_diameter, t);
-    screwhole(bass_driver_screw_offset, -bass_driver_screw_offset, bass_driver_screwhole_diameter, t);
-    screwhole(-bass_driver_screw_offset, bass_driver_screw_offset, bass_driver_screwhole_diameter, t);
-    screwhole(-bass_driver_screw_offset, -bass_driver_screw_offset, bass_driver_screwhole_diameter, t);
-    
+    arc_of(4, d=bass_driver_screw_placement_diameter, sa=45, ea=315) {
+        cyl(d=bass_driver_screwhole_diameter,l=t+$fs);
+    }    
 }
 
-module TEBM35C10(panel_thickness) {
-    bmr_driver_rebate(panel_thickness);
-    bmr_driver_hole(panel_thickness);
-    // chamfer on back of BMR driver
-    translate([0, 0, -(panel_thickness-bmr_driver_chamfer)/2])
-        cyl(d=bmr_driver_hole_diameter,l=bmr_driver_chamfer+$fs,chamfer1=-bmr_driver_chamfer);
+module TEBM35C10(t) {
+    bmr_driver_rebate(t);
+    bmr_driver_hole(t);
+    // chamfer on back of BMR driver, with blocks removed where the screwposts go so they don't get chamfered
+    translate([0, 0, -(t-bmr_driver_chamfer)/2])
+        difference() {
+            cyl(d=bmr_driver_hole_diameter,l=bmr_driver_chamfer+$fs,chamfer1=-bmr_driver_chamfer);
+            arc_of(4, d=bmr_driver_screw_placement_diameter, sa=45, ea=315) {
+                cuboid([bmr_driver_screwpost_diameter, bmr_driver_screwpost_diameter, t]); 
+            }
+        }
 }
 
