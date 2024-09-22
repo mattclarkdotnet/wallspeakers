@@ -1,4 +1,4 @@
-$fa = 1;
+50$fa = 1;
 $fs = 0.01;
 
 include <drivers.scad>
