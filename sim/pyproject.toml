@@ -3,7 +3,13 @@ name = "sim"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
     "electroacpy>=2025.7.1",
+    "pyopencl>=2025.2.6",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "basedpyright>=1.31.3",
 ]
