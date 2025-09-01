@@ -1,10 +1,14 @@
+import sys
+
 import electroacPy as ep
 
-system = ep.load("./outputs/bem_study")
+runid = sys.argv[1]
+
+system = ep.load(f"./outputs/study{runid}")
 
 system.evaluation_polarRadiation(
-    "half_space", "polar_hor", -180, 180, 5, "x", "z", radius=2, offset=[0, 0, 0.05]
+    "half_space", "polar_hor", -180, 180, 5, "x", "y", radius=2
 )
 
 system.run()
-ep.save("./outputs/bem_eval", system)
+ep.save(f"./outputs/eval{runid}", system)

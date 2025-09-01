@@ -1,11 +1,16 @@
+import sys
+
 import electroacPy as ep
 from electroacPy import gtb
 
+meshname = sys.argv[2]
+runid = sys.argv[1]
+
 # %% frequency axis and system initialization
-frequency = gtb.freqop.freq_log10(1, 20e3, 125)
+frequency = gtb.freqop.freq_log10(1, 20e3, 125)  # use 125 normally
 system = ep.loudspeakerSystem(frequency)
 
-# %% Load drivers
+# # %% Load drivers
 system.lem_driver(
     "LW150",
     1,
@@ -18,6 +23,7 @@ system.lem_driver(
     Sd=87e-4,
     ref2bem=1,
 )
+
 system.lem_driver(
     "BMR28",
     2,
@@ -31,8 +37,8 @@ system.lem_driver(
     ref2bem=2,
 )
 
-
-# %% Define ported enclosure
+# Define enclosures
+#
 system.lem_enclosure(
     "sealed_LF",
     Vb=3.2e-3,
@@ -44,16 +50,18 @@ system.lem_enclosure(
     wiring="parallel",
 )
 
-system.lem_enclosure("sealed_BMR", 4e-4, ref2bem=2, setDriver="BMR28")
+system.lem_enclosure(
+    "sealed_BMR", Vb=0.4e-3, Qab=120, Qal=30, ref2bem=2, setDriver="BMR28", Nd=1
+)
 
 from electroacPy.acousticSim.bem import boundaryConditions
 
 bc = boundaryConditions()
-bc.addInfiniteBoundary(normal="z", offset=0)
+bc.addInfiniteBoundary(normal="z", offset=-0.002)
 
 system.study_acousticBEM(
     "half_space",
-    "./meshes/roundovers.msh",
+    f"./meshes/{meshname}.msh",
     ["sealed_LF", "sealed_BMR"],
     domain="exterior",
     boundary_conditions=bc,
@@ -62,4 +70,4 @@ system.study_acousticBEM(
 system.run()
 
 # %% save state
-ep.save("./outputs/bem_study", system)
+ep.save(f"./outputs/study{runid}", system)
