@@ -7,7 +7,7 @@ meshname = sys.argv[2]
 runid = sys.argv[1]
 
 # %% frequency axis and system initialization
-frequency = gtb.freqop.freq_log10(1, 20e3, 125)  # use 125 normally
+frequency = gtb.freqop.freq_log10(20, 20e3, 120)
 system = ep.loudspeakerSystem(frequency)
 
 # # %% Load drivers
