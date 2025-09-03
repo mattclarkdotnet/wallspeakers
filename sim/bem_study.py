@@ -67,6 +67,13 @@ system.study_acousticBEM(
     boundary_conditions=bc,
 )
 
+system.study_acousticBEM(
+    "free_space",
+    f"./meshes/{meshname}.msh",
+    ["sealed_LF", "sealed_BMR"],
+    domain="exterior",
+)
+
 system.run()
 
 # %% save state
