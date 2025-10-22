@@ -1,1 +1,6 @@
 sim/uv.lock
+**/*.stl
+**/*.3mf
+**/*.FCBak
+**/__pycache__
+**/.DS_Store
